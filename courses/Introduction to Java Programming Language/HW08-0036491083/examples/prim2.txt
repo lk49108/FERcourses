@@ -1,0 +1,29 @@
+			load r0, @msg1		; ucitaj poruku1
+			load r1, @msg2   	; ucitaj ispisUpozorenja
+@ispis:		echo r0				; ispisi poruku1
+			iinput @number		; ucitaj 3 u registar r
+			jumpIfTrue @gotov	; ako je dobar unos skacemo na prema kraju programa
+			echo r1				; ako nije dobar unos
+			jump @ispis			; skacemo na ispis ako treba
+			
+			
+@gotov: 	load r0, @number	; ucitamo spremljeni podatak
+			load r1, @msg3		; ucitavamo ispis
+			load r4, @msg4		; ucitavamo ispis novog reda
+			echo r1				; ispisujemo ono sto se nalazi u r1
+			move r1, 5			; pomicemo brojac u r1
+			move r3, 0  		; za provjeru dali su se svi brojevi ispisali
+@petlja:	increment r0		; povecavamo r0
+			echo r0				; ispisujemo sljedece brojeve
+			echo r4				; ispisujemo novi red
+			decrement r1		; smanjujemo brojac
+			testEquals r1, r3	; je li nam jos sto ostalo ili smo na nuli?
+			jumpIfTrue @halt	; ako smo na nuli, zavrsi petlju
+			jump @petlja
+@halt:		halt				; zaustavi procesor
+			
+@number:	RESERVE:1
+@msg1:		DEFSTR "Unesite početni broj: "
+@msg2:		DEFSTR "Unos nije moguće protumačiti kao cijeli broj.\n"
+@msg3:		DEFSTR "Sljedećih 5 brojeva je:\n"
+@msg4:		DEFSTR "\n"

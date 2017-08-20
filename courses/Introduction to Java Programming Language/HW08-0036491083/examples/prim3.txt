@@ -1,0 +1,49 @@
+# glavni program: Zove metodu @fibb i pomoću nje rekurzivno
+# računa zadani fibbonacijev broj i ispisuje ga na zaslon.
+			load r1, @msg1		; ucitavamo poruku za ispis na zaslon
+			echo r1				; ispisujemo poruku
+			iinput @broj		; ucitaj broj za koji treba izracunati fibbonnacijev broj
+			load r0, @broj		; ucitamo taj broj u r0 registar
+			push r0				; Pushamo r0 na stog
+			call @fibb			; Zovemo potprogram @fibb
+			increment r15		; Povećavamo r15 za jedan, skidamo argument sa stoga.
+			echo r0				; ispisujemo izračunati fibbonacijev broj.
+			halt				;zaustavljamo procesor
+			
+# Metoda fibb(i)
+# ------------------------------------------
+# 'i' prima kao jedini parametar preko stoga
+# vraća rezultat u registru r0; sve ostale registre čuva (ako neki mijenja, original gurne na stog pa kasnije restaurira prije izlaska)
+@fibb:		push r1				; čuvamo
+			push r2				; kontekst
+			move r1, 1			; 1 stavljamo u r1
+			move r2, 0			; 0 stavljamo u r2
+			move r0, [r15+4]	; tu uzimamo parametar sa stoga 
+			testEquals r0, r2	; 
+			jumpIfTrue @kraj1	; provjeravamo dali smo
+			testEquals r0, r1	; došli 
+			jumpIfTrue @kraj2	; do kraja rekurzije
+			decrement r0		
+			move r1, r0			
+			push r0				; tu pripremamo novi rekurzivni poziv, stavljamo argument na stog
+			call @fibb			; pozivamo rekurzivno (n - 1)
+			increment r15		; uklonjamo argument
+			move r2, r0			
+			decrement r1		
+			push r1				; opet se pripremamo za novi rekurzivni poziv
+			call @fibb			; pozivamo rekurzivno drugi put (n - 2)
+			increment r15		; uklanjamo argument sa stoga
+			add r0, r2, r0		; računamo fibbonnacijev izraz tu
+			jump @kraj2			
+@kraj1:		move r0, 1			
+@kraj2:		pop r2				; tu
+			pop r1 				; obnavljamo kontekst
+			ret					; vraćamo se iz potprograma
+
+@broj:		RESERVE:1
+# Slijedi mjesto predviđeno za stog
+			RESERVE:22
+@stackTop:	RESERVE
+@msg1:		DEFSTR "Upisite cijeli broj n za koji će biti izračunati odgovarajući fibonnacci: "
+@msg2:		DEFSTR ". broj je: "
+@msg3:		DEFSTR "\n"	
