@@ -37,8 +37,8 @@ public class InstrPop implements Instruction {
 			throw new IllegalArgumentException("Type mismatch for argument.");
 		}
 		if(RegisterUtil.isIndirect((Integer)arguments.get(0).getValue())){
-			throw new IllegalArgumentException("Indirect addresing is not supported in"
-					+ "method pop.");
+			throw new IllegalArgumentException("Indirect addressing is not supported "
+					+ "in method pop.");
 		}
 		value = RegisterUtil.getRegisterIndex((Integer)arguments.get(0).getValue());
 	}
